@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MoonPhaseApp"
+             xmlns:viewModels="clr-namespace:MoonPhaseApp.ViewModels;assembly=MoonPhaseApp"
+             x:Class="MoonPhaseApp.MainPage"
+             BackgroundColor="Black">
+    <ContentPage.BindingContext>
+        <viewModels:MainViewModel />
+    </ContentPage.BindingContext>
+
+
+    <Grid>
+        <Image HorizontalOptions="CenterAndExpand"
+               VerticalOptions="CenterAndExpand"
+               BackgroundColor="black"
+               Scale="1.5"
+               Source="space.png" />
+        <StackLayout VerticalOptions="Center" Margin="0, 50">
+            <Label
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center"
+                FontSize="300"
+                TextColor="White"
+                Text="{Binding Emoji}" />
+            <Label
+                TextColor="White"
+                HorizontalTextAlignment="Center"
+                VerticalOptions="EndAndExpand"
+                Text="{Binding Name}"
+                FontSize="25"
+                FontAttributes="Bold"/>
+            <Label
+                Text="{Binding Display, Mode=TwoWay}"
+                TextColor="White"
+                HorizontalOptions="CenterAndExpand"
+                VerticalOptions="CenterAndExpand"
+                Margin="25, 0" />
+            <Grid Margin="25" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackLayout Grid.Column="0">
+                    <Label Text="Date: "
+                           HorizontalTextAlignment="Start"
+                           TextColor="white" />
+                    <DatePicker
+                        TextColor="White"
+                        BackgroundColor="DeepSkyBlue"
+                        MinimumDate="{Binding MinimumDateTime}"
+                        Date="{Binding SelectedDate, Mode=TwoWay}"
+                        DateSelected="DatePicker_OnDateSelected" />
+                </StackLayout>
+                <StackLayout Grid.Column="1">
+                    <Label Text="Hemisphere: "
+                           HorizontalTextAlignment="Start"
+                           TextColor="white" />
+                    <Picker
+                        Title="Select A Hemisphere"
+                        BackgroundColor="DeepSkyBlue"
+                        MinimumWidthRequest="10"
+                        TitleColor="White"
+                        TextColor="White"
+                        ItemsSource="{Binding Hemispheres}"
+                        SelectedItem="{Binding Hemisphere}"
+                        SelectedIndexChanged="Picker_OnSelectedIndexChanged"
+                        ItemDisplayBinding="{Binding .}" />
+                </StackLayout>
+            </Grid>
+        </StackLayout>
+    </Grid>
+</ContentPage>
