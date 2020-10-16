@@ -4,44 +4,37 @@ using System.Linq;
 
 namespace MoonPhaseApp.Services
 {
-    public static class Moon
+        public static class Moon
     {
-        private static readonly IReadOnlyList<string> SouthernHemisphere
+        private static readonly IReadOnlyList<string> NorthernHemisphere
             = new List<string> {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘", "🌑"};
 
-        private static readonly IReadOnlyList<string> NorthernHemisphere
-            = SouthernHemisphere.Reverse().ToList();
+        private static readonly IReadOnlyList<string> SouthernHemisphere
+            = NorthernHemisphere.Reverse().ToList();
 
-        private static readonly List<string> names = new List<string>
+        private static readonly List<string> Names = new List<string>
         {
             Phase.NewMoon,
             Phase.WaxingCrescent, Phase.FirstQuarter, Phase.WaxingGibbous,
             Phase.FullMoon,
-            Phase.WaningGibbous, Phase.ThirdQuarter, Phase.WaningCrescent,
-            Phase.NewMoon
+            Phase.WaningGibbous, Phase.ThirdQuarter, Phase.WaningCrescent
         };
 
         private const double TotalLengthOfCycle = 29.53;
-
-        private static readonly double[] daysIntoCycle = new double[]
-            // added some buffer space in the beginning and end so that new moon gets a chance
-            {0, 1, 3.5, 7, 11, 15, 18.5, 22, 25.75, 29.00, TotalLengthOfCycle};
-
-        public static IReadOnlyList<Phase> Phases => allPhases.AsReadOnly();
-        private static readonly List<Phase> allPhases = new List<Phase>();
+        
         public static DateTime MinimumDateTime 
             =>  new DateTime(1920, 1, 21, 5, 25, 00, DateTimeKind.Utc);
+        
+        private static readonly List<Phase> allPhases = new List<Phase>();
 
         static Moon()
         {
-            var phases = new List<Phase>();
-            for (var i = 0; i < names.Count(); i++)
-            {
-                var phase = new Phase(names[i], daysIntoCycle[i], daysIntoCycle[i + 1]);
-                phases.Add(phase);
-            }
-
-            allPhases = phases;
+            var period = TotalLengthOfCycle / Names.Count;
+            // divide the phases into equal parts 
+            // making sure there are no gaps
+            allPhases = Names
+                .Select((t, i) => new Phase(t, period * i, period * (i + 1)))
+                .ToList();
         }
 
         /// <summary>
@@ -60,7 +53,6 @@ namespace MoonPhaseApp.Services
 
             // London New Moon (1920)
             // https://www.timeanddate.com/moon/phases/uk/london?year=1920
-            
             var daysSinceLastNewMoon =
                 MinimumDateTime.ToOADate() + julianConstant;
 
@@ -68,9 +60,7 @@ namespace MoonPhaseApp.Services
             var intoCycle = (newMoons - Math.Truncate(newMoons)) * TotalLengthOfCycle;
 
             var phase =
-                allPhases
-                    .Where(p => intoCycle >= p.Start && intoCycle < p.End)
-                    .First();
+                allPhases.First(p => intoCycle >= p.Start && intoCycle <= p.End);
 
             var index = allPhases.IndexOf(phase);
             var currentPhase =
