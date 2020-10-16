@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MoonPhaseApp.Services
 {
-        public static class Moon
+    public static class Moon
     {
         private static readonly IReadOnlyList<string> NorthernHemisphere
             = new List<string> {"🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘", "🌑"};
@@ -21,10 +21,10 @@ namespace MoonPhaseApp.Services
         };
 
         private const double TotalLengthOfCycle = 29.53;
-        
-        public static DateTime MinimumDateTime 
-            =>  new DateTime(1920, 1, 21, 5, 25, 00, DateTimeKind.Utc);
-        
+
+        public static DateTime MinimumDateTime
+            => new DateTime(1920, 1, 21, 5, 25, 00, DateTimeKind.Utc);
+
         private static readonly List<Phase> allPhases = new List<Phase>();
 
         static Moon()
@@ -107,13 +107,14 @@ namespace MoonPhaseApp.Services
             public double DaysIntoCycle { get; set; }
             public Earth.Hemispheres Hemisphere { get; set; }
             public DateTime Moment { get; }
-            public double Visibility  
+
+            public double Visibility
             {
                 get
                 {
                     const int FullMoon = 15;
                     const double halfCycle = TotalLengthOfCycle / 2;
-                
+
                     var numerator = DaysIntoCycle > FullMoon
                         // past the full moon, we want to count down
                         ? halfCycle - (DaysIntoCycle % halfCycle)
@@ -126,7 +127,7 @@ namespace MoonPhaseApp.Services
 
             public override string ToString()
             {
-                var percent = Math.Round(Visibility , 2);
+                var percent = Math.Round(Visibility, 2);
                 return $"The Moon for {Moment} is {DaysIntoCycle} days\n" +
                        $"into the cycle, and is showing as \"{Name}\"\n" +
                        $"with {percent}% visibility, and a face of {Emoji} from the {Hemisphere.ToString().ToLowerInvariant()} hemisphere.";
